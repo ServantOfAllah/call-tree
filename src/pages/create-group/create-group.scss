@@ -1,0 +1,43 @@
+page-create-group {
+    .button {
+        height: 2.8em;
+        font-size: 1.6rem;
+        color: #fff;
+        padding: 1.65em 1em;
+    }
+    .signin_btn {
+        box-shadow: #000;
+        padding: 20px;
+        border-radius: 25px;
+    }
+    .loginLabel {
+        color: #fff;
+        //  border-radius: 10px;
+    }
+    .h2-text{
+        color: #005d92;
+    }
+    .list[inset] {
+        margin-bottom: 5px;
+    }
+    .form_icon {
+        color: #ac53f5;
+        font-size: 1.5em;
+        margin-left: 15px;
+    }
+    .list[inset] {
+        margin: 0;
+        border-radius: 4px;
+    }
+    .item{
+        border: solid 2px #e1e1e1 !important;
+        border-radius: 25px !important;
+        margin-bottom: 10px;
+    }
+    .item{
+        margin-bottom: 10px;
+        border-radius: 25px;
+        border: solid 2px #005d92;
+    }
+
+}

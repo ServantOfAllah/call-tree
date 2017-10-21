@@ -1,18 +1,51 @@
 <ion-header>
-  <ion-navbar>
+
+  <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only>
+        <ion-icon name="ios-settings"></ion-icon>
+      </button>
+    </ion-buttons>
+    <!-- <ion-title>Home</ion-title> -->
+    <ion-searchbar [(ngModel)]="searchInput" (ionCancel)="onCancel($event)" (ionInput)="filterItems($event)" (ionClear)="onClear($event)"
+      animated="true" autocomplete="on" placeholder='search'>
+    </ion-searchbar>
+
   </ion-navbar>
+
 </ion-header>
 
-<ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+<ion-content>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+    <ion-item *ngFor="let details of searchResults" (click)="navcontactList(details)">
+        <p>search results</p>
+        <h2>{{details.groupname}}</h2>
+      </ion-item>
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-4 col-md-3 #groupDivs *ngFor="let group of groups">
+        <div class="div-circle" (click)="navcontactList(group)" [(ngModel)]='groupInput' [style.background-color]="group.color">{{group.groupname}}</div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-fab bottom right>
+    <button ion-fab class="fab-mini">
+      <ion-icon name='add'></ion-icon>
+    </button>
+    <ion-fab-list class="fablist" side="top">
+      <!-- <button ion-fab class="add-btn" (click)="createContact()">ADD CONTACT
+        <ion-icon class="hidden-icon" name='add' color='primary'></ion-icon>
+      </button> -->
+      <button ion-fab class="add-btn" (click)="createGroup()">ADD GROUP
+        <ion-icon class="hidden-icon" name="add" color='primary'></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
+
+
 </ion-content>

@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons end>
+      <button (click)="closeModal()" ion-button icon-only>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>ADD GROUP</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <!-- <form [formGroup]='form'> -->
+    <ion-list inset no-lines>
+      <ion-item class="item">
+        <ion-label>
+          <ion-icon name="contacts" class="form_icon"></ion-icon>
+        </ion-label>
+        <ion-input type="text" placeholder="group name" [(ngModel)]="group.groupname"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-item>
+      <ion-label>COLORS</ion-label>
+      <ion-select [(ngModel)]="group.color" (ionChange)="groupColor()">
+        <ion-option value='#0000FF'>Blue</ion-option>
+        <ion-option value='#008000'>Green</ion-option>
+        <ion-option value='#FFFF00'>Yellow</ion-option>
+        <ion-option value='#FF0000'>Red</ion-option>
+      </ion-select>
+    </ion-item>
+    <button (click)="addGroup()" ion-button full class="signin_btn" color="primary"><span class="animated shake loginLabel">ADD</span></button>
+  <!-- </form> -->
+
+</ion-content>

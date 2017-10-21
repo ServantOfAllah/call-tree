@@ -14,3 +14,46 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+.bg_menu{
+    //background:  linear-gradient(to bottom, #9000df , #ac15df);
+    background-color: #9000df;
+    color:#fff;
+    margin-bottom: 0px;
+}
+.content hr {
+  background-color: #fff;
+  margin-left: 16px;
+}
+.ibox-img {
+  max-width: 70%;
+  margin-top: 13px;
+  border: 0;
+  padding-left: 10px;
+}
+.menu-tb {
+  padding: 4px;
+  min-height: 56px;
+  height: 25vh;
+}
+.side-logo{
+    float: right;
+    padding: 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    max-width: 80%;
+}
+.menu-list{
+  padding-top: 25vh;
+}
+.main-content {
+  left: 0;
+  right: 0;
+  top: 0;
+}
+ion-menu{
+    ion-content{
+        background-color: #9000df;
+        background:  linear-gradient(to bottom, #9000df , #9000df);
+    }
+   }

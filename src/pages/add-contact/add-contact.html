@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons end>
+      <button (click)="closeModal()" ion-button icon-only>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>ADD CONTACT</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <!-- <form [formGroup]='form'> -->
+    <ion-list no-lines>
+
+      <ion-item class="item-first">
+        <ion-label>
+          <ion-icon name="person" class="form_icon"></ion-icon>
+        </ion-label>
+        <ion-input [(ngModel)]="contact.fname" type="text" placeholder="name of contact..." ></ion-input>
+      </ion-item>
+
+      <ion-item class="item-first">
+        <ion-label>
+          <ion-icon name="call" class="form_icon"></ion-icon>
+        </ion-label>
+        <ion-input [(ngModel)]="contact.phone" type="phone" placeholder="number..."></ion-input>
+      </ion-item>
+
+      <ion-item class="item-first">
+        <ion-label>Group</ion-label>
+        <ion-select [(ngModel)]="contact.groupname" (ionChange)="groupList()" >
+          <ion-option *ngFor="let group of allGroups" value={{group.groupname}}>{{group.groupname}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+
+    <!-- <ion-grid>
+      <ion-row>
+        <ion-col col-3>COLORS:</ion-col>
+        <ion-col col-2>
+          <div class="radio-div"></div>
+        </ion-col>
+        <ion-col col-2>
+          <div class="radio-div"></div>
+        </ion-col>
+        <ion-col col-2>
+          <div class="radio-div"></div>
+        </ion-col>
+        <ion-col col-2>
+          <div class="radio-div"></div>
+        </ion-col>
+      </ion-row>
+    </ion-grid> -->
+
+    <!-- <ion-list radio-group no-lines>
+
+      <h2>COLORS</h2>
+        <ion-item>
+          <div><ion-radio checked="true" value="go"></ion-radio></div>
+          <div><ion-radio checked="true" value="go"></ion-radio></div>
+          <div><ion-radio checked="true" value="go"></ion-radio></div>
+          <div><ion-radio checked="true" value="go"></ion-radio></div>
+          <div><ion-radio checked="true" value="go"></ion-radio></div>
+        </ion-item>
+      </ion-list> -->
+
+    <button (click)="addContact()" ion-button block round class="signin_btn" color="primary">
+      <span class="animated shake loginLabel">ADD</span>
+    </button>
+  <!-- </form> -->
+</ion-content>

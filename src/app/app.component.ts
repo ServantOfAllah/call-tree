@@ -4,7 +4,12 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { AboutPage } from '../pages/about/about';
+import { HelpPage } from '../pages/help/help';
+import { CreditPage } from '../pages/credit/credit';
+import { ReportBugPage } from '../pages/report-bug/report-bug';
+import { RatePage } from '../pages/rate/rate';
+import { DatabaseProvider } from '../providers/database/database';
 
 @Component({
   templateUrl: 'app.html'
@@ -15,14 +20,22 @@ export class MyApp {
   rootPage: any = HomePage;
 
   pages: Array<{title: string, component: any}>;
+  pages_a: Array<{title: string, component: any}>;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Home', component: HomePage },
-      { title: 'List', component: ListPage }
+      { title: 'HOME', component: HomePage },
+      { title: 'ABOUT', component: AboutPage },
+      { title: 'HELP', component: HelpPage },
+      { title: 'CREDIT', component: CreditPage }
+    ];
+
+    this.pages_a = [
+      { title: 'REPORT A BUG', component: ReportBugPage },
+      { title: 'RATE THIS APP', component: RatePage }
     ];
 
   }

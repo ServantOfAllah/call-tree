@@ -1,0 +1,23 @@
+page-add-contact {
+    .form_icon {
+        color: #ac53f5;
+        font-size: 1.5em;
+        margin-left: 15px;
+    }
+    .radio-div{
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        margin-right: 0px !important;
+        background-color: #32db64;
+    }
+    .list[inset] {
+        margin: 0;
+        border-radius: 4px;
+    }
+    .item-first{
+        border: solid 2px #e1e1e1 !important;
+        border-radius: 25px !important;
+        margin-bottom: 10px;
+    }
+}

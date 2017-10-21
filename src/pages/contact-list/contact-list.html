@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-navbar class="navbar" color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end>
+      <button ion-button icon-only>
+        <ion-icon name="ios-settings"></ion-icon>
+      </button>
+    </ion-buttons>
+    <!-- <ion-title>Home</ion-title> -->
+    <ion-searchbar animated="true" autocomplete="on" placeholder='search' [(ngModel)]="myInput" [showCancelButton]="shouldShowCancel"
+      (ionInput)="onInput($event)" (ionCancel)="onCancel($event)">
+    </ion-searchbar>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="bg-div">
+    <ion-scroll scrollY="false" style="width: 100%; height: 100%">
+      <div class="cirle" [style.background-color]="groupvalCol">
+        <h2 class="header-text groupname-text">{{groupval}}</h2>
+        <h4 class="header-text group-text">GROUP</h4>
+      </div>
+    </ion-scroll>
+    <ion-fab left top>
+      <button ion-fab mini color="secondary" class="fab-top">
+        <ion-icon name='add'></ion-icon>
+      </button>
+    </ion-fab>
+  </div>
+  <ion-fab bottom right>
+    <button (click)="createContact()" ion-fab class="fab-mini">
+      <ion-icon name='add'></ion-icon>
+    </button>
+  </ion-fab>
+  <ion-list *ngFor="let contact of contacts">
+      <ion-item-sliding>
+    <ion-item>
+      <div class="div-circle" item-start>A</div>
+      <h2>{{contact.fname}}</h2>
+      <p>{{contact.phone}}</p>
+      <p>{{contact.groupname}}</p>
+    </ion-item>
+    <ion-item-options side="right">
+      <button ion-button>
+        <ion-icon name="trash" color="danger"></ion-icon>
+        Delete
+      </button>
+    </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- <ion-fab bottom right>
+    <button ion-fab mini class="fab-mini">
+      <ion-icon name='add'></ion-icon>
+    </button>
+  </ion-fab> -->
+</ion-content>
