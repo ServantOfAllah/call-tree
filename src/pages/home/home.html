@@ -13,18 +13,21 @@
     <ion-searchbar [(ngModel)]="searchInput" (ionCancel)="onCancel($event)" (ionInput)="filterItems($event)" (ionClear)="onClear($event)"
       animated="true" autocomplete="on" placeholder='search'>
     </ion-searchbar>
-
   </ion-navbar>
-
 </ion-header>
 
-<ion-content>
+<ion-content padding>
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="pull down to refresh" refreshingSpinner="circles" refreshingText="updating...">
+        </ion-refresher-content>
+      </ion-refresher>
 
-    <ion-item *ngFor="let details of searchResults" (click)="navcontactList(details)">
-        <p>search results</p>
-        <h2>{{details.groupname}}</h2>
-      </ion-item>
+  <ion-item *ngFor="let details of searchResults" (click)="navcontactList(details)">
+    <p>search results</p>
+    <h2>{{details.groupname}}</h2>
+  </ion-item>
 
+  <div *ngIf="!isGroupEmpty; else messageDiv">
   <ion-grid>
     <ion-row>
       <ion-col col-4 col-md-3 #groupDivs *ngFor="let group of groups">
@@ -32,6 +35,14 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+</div>
+
+  <ng-template #messageDiv>
+    <div class="empty-msg">
+    <h2>Start adding your first group...</h2>
+    <h2>Its all start here</h2>
+  </div>
+  </ng-template>
 
   <ion-fab bottom right>
     <button ion-fab class="fab-mini">

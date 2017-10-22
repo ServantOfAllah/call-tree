@@ -59,6 +59,16 @@ page-home {
         border: 2px solid #ffee00;
         font-weight: bold;
     }
+    .empty-msg{
+      padding: 30px;
+      color: #9000ff;
+      font-weight: bold;
+      padding-top: 20vh;
+    }
+    .empty-msg h2{
+      text-align: center;
+      margin-top: 0px;
+    }
     // .fab-mini:before {
     //     content: " ";
     //     position: absolute;

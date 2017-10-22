@@ -20,6 +20,7 @@ export class HomePage {
   groupval; string
   colorGroup: string;
   searchInput: string;
+  isGroupEmpty: boolean = true;
 
   constructor(private databaseprovider: DatabaseProvider, private navParam: NavParams, public modalCtrl: ModalController, private storage: Storage, public navCtrl: NavController) {
 
@@ -34,14 +35,14 @@ export class HomePage {
   loadDeveloperData() {
     this.databaseprovider.getAllGroup().then(data => {
       this.groups = data;
+      if(this.groups.length < 1){
+        this.isGroupEmpty = true;
+      }else{
+        this.isGroupEmpty = false;
+      }
       console.log(this.groups)
     })
   }
-
-  // changeCardColor(group) {
-  //   var divs = document.getElementsByClassName( 'div-circle' );
-  //   divs.style.backgroundColor = 'blue';
-  // }
 
   navcontactList(group: any){
     this.databaseprovider.getAllGroupContacts(this.groupval).then(data => {
@@ -60,6 +61,15 @@ export class HomePage {
       });
     }
   }
+
+  doRefresh(refresher){
+    this.loadDeveloperData();
+    setTimeout(() => {
+      console.log('update has ended');
+      refresher.complete();
+    }, 2000);
+  }
+
 
   onClear(){
     this.searchResults = [];
