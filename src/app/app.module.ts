@@ -5,6 +5,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { SQLitePorter } from '@ionic-native/sqlite-porter';
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule, Storage } from '@ionic/storage';
+import { Contacts, Contact, ContactField, ContactName } from '@ionic-native/contacts';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -17,7 +18,9 @@ import { RatePage } from '../pages/rate/rate';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { DatabaseProvider } from '../providers/database/database';
-
+import { SMS } from '@ionic-native/sms';
+import { CallNumber  } from '@ionic-native/call-number'
+import { SocialSharing } from '@ionic-native/social-sharing';
 @NgModule({
   declarations: [
     MyApp,
@@ -50,6 +53,11 @@ import { DatabaseProvider } from '../providers/database/database';
     DatabaseProvider,
     SQLitePorter,
     SQLite,
+    Contacts,
+    Contact,
+    SMS,
+    CallNumber,
+    SocialSharing,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     DatabaseProvider
   ]

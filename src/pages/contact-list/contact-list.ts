@@ -13,13 +13,6 @@ export class ContactListPage {
   first_letter: any;
   first_letter_val: any;
 
-  mygroup = {
-    groupsname: 'family',
-    lastname: 'adams',
-    firstname: 'abdulmajid',
-    phone: 123
-  }
-
   contacts = [];
   groupval: any;
   groupvalCol: any;

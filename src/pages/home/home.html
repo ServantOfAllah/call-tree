@@ -9,49 +9,94 @@
         <ion-icon name="ios-settings"></ion-icon>
       </button>
     </ion-buttons>
-    <!-- <ion-title>Home</ion-title> -->
-    <ion-searchbar [(ngModel)]="searchInput" (ionCancel)="onCancel($event)" (ionInput)="filterItems($event)" (ionClear)="onClear($event)"
-      animated="true" autocomplete="on" placeholder='search'>
+    <ion-searchbar [(ngModel)]='q' (keyup)='onsearch($event)' (ionCancel)="onCancel($event)" (ionClear)="onClear($event)" animated="true"
+      autocomplete="on" placeholder='search'>
     </ion-searchbar>
   </ion-navbar>
-</ion-header>
-
-<ion-content padding>
-    <ion-refresher (ionRefresh)="doRefresh($event)">
-        <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="pull down to refresh" refreshingSpinner="circles" refreshingText="updating...">
-        </ion-refresher-content>
-      </ion-refresher>
-
-  <ion-item *ngFor="let details of searchResults" (click)="navcontactList(details)">
+  <!-- <ion-item *ngFor="let details of searchResults" (click)="navcontactList(details)">
     <p>search results</p>
     <h2>{{details.groupname}}</h2>
-  </ion-item>
+  </ion-item> -->
+</ion-header>
 
-  <div *ngIf="!isGroupEmpty; else messageDiv">
-  <ion-grid>
-    <ion-row>
-      <ion-col col-4 col-md-3 #groupDivs *ngFor="let group of groups">
-        <div class="div-circle" (click)="navcontactList(group)" [(ngModel)]='groupInput' [style.background-color]="group.color">{{group.groupname}}</div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</div>
+<ion-content class="main-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="pull down to refresh" refreshingSpinner="circles" refreshingText="updating...">
+    </ion-refresher-content>
+  </ion-refresher>
 
-  <ng-template #messageDiv>
-    <div class="empty-msg">
-    <h2>Start adding your first group...</h2>
-    <h2>Its all start here</h2>
+  <!-- <button ion-button full (click)="showPrompt()">open prompt</button> -->
+
+  <!-- add segment header -->
+  <ion-segment [(ngModel)]='phoneList'>
+    <ion-segment-button value='contacts'>
+      Contacts
+    </ion-segment-button>
+    <ion-segment-button value='groups'>
+      Groups
+    </ion-segment-button>
+  </ion-segment>
+  <!-- end of segment header -->
+
+  <!-- contains all data in page -->
+  <div [ngSwitch]='phoneList'>
+    <!-- Contacts segment -->
+    <div *ngSwitchCase="'contacts'">
+      <ion-list no-lines>
+        <ion-item *ngFor="let contact of foundContacts; let i = index;">
+          <ion-grid>
+            <ion-row>
+              <ion-col col-3>
+                <ion-avatar item-start>
+                  <div class="div-circle" item-start *ngIf='!contact?.photos'>{{firstLetter}}</div>
+                  <img *ngIf="contact?.photos" [src]="sanitizeImg(contact?.photos[0].value)" />
+                </ion-avatar>
+              </ion-col>
+              <ion-col col-8>
+                <h2>{{contact.displayName}}</h2>
+                <p *ngFor='let num of contact.phoneNumbers' (click)='openMenu(num.value, i)'>{{num.value}}</p>
+                <!-- <p *ngFor='let num of contact'>{{num.email}}</p> -->
+              </ion-col>
+              <ion-col col-1>
+                <div item-end>
+                  <ion-icon name="more" color='primary' class="more-icon"></ion-icon>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- Group segment -->
+    <div *ngSwitchCase="'groups'">
+      <div *ngIf="!isGroupEmpty; else messageDiv">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-4 col-md-3 #groupDivs *ngFor="let group of groups">
+              <div class="div-circle" (click)="navcontactList(group)" [(ngModel)]='groupInput' [style.background-color]="group.color">{{group.groupname}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <ng-template #messageDiv>
+        <div class="empty-msg">
+          <h2>Start adding your first group...</h2>
+          <h2>Its all start here</h2>
+        </div>
+      </ng-template>
+    </div>
+
   </div>
-  </ng-template>
 
   <ion-fab bottom right>
     <button ion-fab class="fab-mini">
       <ion-icon name='add'></ion-icon>
     </button>
     <ion-fab-list class="fablist" side="top">
-      <!-- <button ion-fab class="add-btn" (click)="createContact()">ADD CONTACT
+      <button ion-fab class="add-btn" (click)="createContact()">ADD CONTACT
         <ion-icon class="hidden-icon" name='add' color='primary'></ion-icon>
-      </button> -->
+      </button>
       <button ion-fab class="add-btn" (click)="createGroup()">ADD GROUP
         <ion-icon class="hidden-icon" name="add" color='primary'></ion-icon>
       </button>

@@ -30,8 +30,8 @@
 
       <ion-item class="item-first">
         <ion-label>Group</ion-label>
-        <ion-select [(ngModel)]="contact.groupname" (ionChange)="groupList()" >
-          <ion-option *ngFor="let group of allGroups" value={{group.groupname}}>{{group.groupname}}</ion-option>
+        <ion-select [(ngModel)]="contact.groupname" (ionChange)="groupList($event)" >
+          <ion-option *ngFor="let group of allGroups" value={{group.groupname}} selected='group.groupname == contact.groupname'>{{group.groupname}}</ion-option>
         </ion-select>
       </ion-item>
     </ion-list>

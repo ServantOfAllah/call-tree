@@ -19,19 +19,18 @@ export class AddContactPage {
 
   constructor(private loadCtrl: LoadingController, private toast: ToastController, private databaseprovider: DatabaseProvider, private view: ViewController, private formBuilder: FormBuilder, public navCtrl: NavController, public navParams: NavParams) {
 
-  //   this.form = formBuilder.group({
-  //     groups: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z]*'), Validators.required])],
-  // });
-
     this.databaseprovider.getDatabaseState().subscribe(rdy => {
       if (rdy) {
         this.loadDeveloperData();
       }
     })
-
     this.getGroups();
-
   }
+
+  //create contacts
+  // addContact(){
+  //   let contact: Contact = this.contacts.create();
+  // }
 
   loadDeveloperData() {
     this.databaseprovider.getAllContacts().then(data => {
@@ -45,8 +44,11 @@ export class AddContactPage {
       console.log('all groups ', this.allGroups);
     })
   }
-  groupList(){
-
+  groupList(newForm){
+    let selectedForm = this.contacts.find((f)=>{
+      return f.id == newForm;
+    });
+    this.contacts['groupname'] = selectedForm;
   }
 
   addContact() {
@@ -63,7 +65,9 @@ export class AddContactPage {
       }else if(this.contact['fname'] == '' || parseInt(this.contact['phone'].lenght) <= 0){
         this.validationToast('Contact name and phone number cannot be empty');
       }else if(this.contact['groupname'].lenght < 1){
-        this.validationToast('Please select a group for your cona=tact');
+        this.validationToast('Please select a group for your contact');
+      }else{
+        this.validationToast('Contact name and phone field cannot be empty');
       }
   }
 

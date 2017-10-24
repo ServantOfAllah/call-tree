@@ -21,11 +21,6 @@ export class CreateGroupPage {
   isGroupEmpty: boolean;
 
   constructor(private loadCtrl: LoadingController, private toast: ToastController, private databaseprovider: DatabaseProvider, private storage: Storage, private view: ViewController, private formBuilder: FormBuilder, public navCtrl: NavController, public navParams: NavParams) {
-    // this.form = formBuilder.group({
-    //   groupName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z]*'), Validators.required])],
-    //   colorName: ['', Validators.required]
-    // });
-
     this.databaseprovider.getDatabaseState().subscribe(rdy => {
       if (rdy) {
         this.loadDeveloperData();

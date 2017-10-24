@@ -1,8 +1,12 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, ModalController, NavParams, Col, Slide } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { NavController, ModalController, ActionSheetController, Platform, ToastController, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { CONTACT_LIST } from '../mocks/contacts-details';
 import { DatabaseProvider } from './../../providers/database/database';
+import { Contacts, Contact, ContactField, ContactName, ContactFieldType } from '@ionic-native/contacts';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SMS } from '@ionic-native/sms';
+import { CallNumber } from '@ionic-native/call-number';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @Component({
   selector: 'page-home',
@@ -10,9 +14,9 @@ import { DatabaseProvider } from './../../providers/database/database';
 })
 export class HomePage {
 
-  // @ViewChild('groupDivs') groupDiv: Slide;
+  contactNo: any;
+  phoneList = 'contacts'
 
-  exmArr = []
   groups = [];
   grouplist = [];
   searchResults = [];
@@ -21,30 +25,206 @@ export class HomePage {
   colorGroup: string;
   searchInput: string;
   isGroupEmpty: boolean = true;
+  whereTosearch: ContactFieldType[] = ['displayName'];
+  q: string;
+  callNo: string;
+  message: any;
+  foundContacts = [];
+  usersGroup = []
+  firstLetter: string;
 
-  constructor(private databaseprovider: DatabaseProvider, private navParam: NavParams, public modalCtrl: ModalController, private storage: Storage, public navCtrl: NavController) {
+  constructor(private socialSharing: SocialSharing, public alertCtrl: AlertController, private toastCtrl:ToastController, private sms: SMS, private callcont: CallNumber, private platform: Platform, private actionsheet: ActionSheetController, private sanitize: DomSanitizer, private contacts: Contacts, private contact: Contact, private databaseprovider: DatabaseProvider, public modalCtrl: ModalController, public navCtrl: NavController) {
 
+    var array = [{
+      'family':{
+        color:'#fff',
+        contactname: 'adams',
+        phNo: '0504245554',
+        groupname: 'family'
+      }
+    }]
+    var array2 = [{
+      'friends':{
+        color:'#fff',
+        contactname: 'abdulmajid',
+        phNo: '0504056605',
+        groupname: 'friends'
+      }
+    }]
+    this.usersGroup.push(array);
+    this.usersGroup.push(array2);
+
+    console.log("Group arrays ",this.usersGroup);
+
+    this.search(' ');
     this.databaseprovider.getDatabaseState().subscribe(rdy => {
       if (rdy) {
         this.loadDeveloperData();
       }
     })
+  }
 
+  //prompt message
+  showPrompt(phNo) {
+    let prompt = this.alertCtrl.create({
+      title: 'SMS',
+      message: "Enter your message to send",
+      cssClass: 'alertcss',
+      inputs: [
+        {
+          name: 'MESSAGE',
+          type: 'string',
+          placeholder: 'send sms'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Send',
+          handler: data => {
+            this.message = data.MESSAGE;
+            if(this.message !== ''){
+              this.sendSMS(phNo, this.message);
+            }else{
+              this.respToast(typeof(phNo) + phNo + typeof(this.message) + this.message )
+            }
+            console.log('Saved clicked');
+          },
+        }
+      ]
+    });
+    prompt.present();
+  }
+
+  respToast(msg){
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 3000
+    });
+    toast.present();
+  }
+
+  //open more option
+  openMenu(phNo: string, index) {
+    let actionsheet = this.actionsheet.create({
+      title: 'Options',
+      cssClass: 'page-home',
+      buttons: [
+        {
+          text: 'Call',
+          role: 'destructive',
+          icon: !this.platform.is('ios') ? 'call' : null,
+          handler: () => {
+            this.call(phNo);
+            console.log('Call clicked');
+          }
+        },
+        {
+          text: 'Send SMS',
+          icon: !this.platform.is('ios') ? 'mail' : null,
+          handler: () => {
+            //this.sendSMS(phNo, sms);
+            this.showPrompt(phNo);
+            console.log('Send sms clicked');
+          }
+        },
+        {
+          text: 'Share',
+          icon: !this.platform.is('ios') ? 'share' : null,
+          handler: () => {
+            var msg = this.compilemsg(index)
+            this.socialSharing.share(msg, null, null, null)
+            this.respToast('sharing' + msg)
+            //this.regularShare(phNo);
+            console.log('Share clicked');
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel', // will always sort to be on the bottom
+          icon: !this.platform.is('ios') ? 'close' : null,
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionsheet.present()
+  }
+
+  compilemsg(index):string{
+    var msg = this.foundContacts[index].displayName + "\n Number: " + this.foundContacts[index].phoneNumbers[0].value ;
+    return msg.concat("\n Sent from my Call Tree App !");
+  }
+
+  regularShare(index){
+    var msg = this.compilemsg(index)
+    this.socialSharing.share(msg, null, null, null)
+  }
+
+  call(callNo: string){
+    this.callcont.callNumber(callNo, true).then(() => {
+      this.respToast('Now calling');
+    }).catch((err)=>{
+      this.respToast('unable to call');
+    })
+  }
+
+  sendSMS(callNo: string, sms: string){
+    var option: {
+      replaceLineBreaks: true,
+      android: {
+        intent: 'INTENT'
+      }
+    }
+    this.sms.send(callNo, sms, option).then(() => {
+      this.respToast('message sent');
+    }).catch((err)=>{
+      JSON.stringify(this.respToast(console.error));
+    })
+  }
+
+  //search all phone contacts
+  search(val) {
+    this.contacts.find(this.whereTosearch, { filter: val, multiple: true }).then((data) => {
+      this.foundContacts = data;
+      // for(var i=0; i<this.foundContacts.length; i++){
+      //   this.firstLetter = this.foundContacts[i].displayName.charAt(0);
+      // }
+      this.firstLetter = this.foundContacts[0].displayName.charAt(0);
+    }).catch((err) => {
+      alert(JSON.stringify(err));
+    })
+  }
+
+  //sanitize all contact img
+  sanitizeImg(val) {
+    return this.sanitize.bypassSecurityTrustUrl(val)
+  }
+
+  //search contact list
+  onsearch(ev) {
+    this.search(ev.target.value)
   }
 
   loadDeveloperData() {
     this.databaseprovider.getAllGroup().then(data => {
       this.groups = data;
-      if(this.groups.length < 1){
+      if (this.groups.length < 1) {
         this.isGroupEmpty = true;
-      }else{
+      } else {
         this.isGroupEmpty = false;
       }
       console.log(this.groups)
     })
   }
 
-  navcontactList(group: any){
+  navcontactList(group: any) {
     this.databaseprovider.getAllGroupContacts(this.groupval).then(data => {
       this.grouplist = data;
       this.navCtrl.push('ContactListPage', { groupval: group.groupname, colorGroup: group.color });
@@ -52,17 +232,7 @@ export class HomePage {
     })
   }
 
-  filterItems(ev: any){
-    this.loadDeveloperData();
-    let val = ev.target.value;
-    if(val && val.trim() != ''){
-      this.searchResults = this.searchResults.filter(function(item){
-        return item.toLowerCase().includes(val.toLowerCase());
-      });
-    }
-  }
-
-  doRefresh(refresher){
+  doRefresh(refresher) {
     this.loadDeveloperData();
     setTimeout(() => {
       console.log('update has ended');
@@ -70,10 +240,10 @@ export class HomePage {
     }, 2000);
   }
 
-
-  onClear(){
-    this.searchResults = [];
+  onClear() {
+    this.search(' ');
   }
+
   onCancel(event) { }
   onInput(event) { }
 
