@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, ToastController } from 'ionic-angular';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { SQLitePorter } from '@ionic-native/sqlite-porter';
 import { Http } from '@angular/http';
@@ -13,7 +13,7 @@ export class DatabaseProvider {
   database: SQLiteObject;
   private databaseReady: BehaviorSubject<boolean>;
 
-  constructor(public sqlitePorter: SQLitePorter, private storage: Storage, private sqlite: SQLite, private platform: Platform, private http: Http) {
+  constructor(private toastCtrl: ToastController, public sqlitePorter: SQLitePorter, private storage: Storage, private sqlite: SQLite, private platform: Platform, private http: Http) {
 
     this.databaseReady = new BehaviorSubject(false);
     this.platform.ready().then(() => {
@@ -21,7 +21,8 @@ export class DatabaseProvider {
       this.sqlite.create({
         name: 'contacts.db',
         location: 'default'
-      }).then((db: SQLiteObject) => {
+      })
+      .then((db: SQLiteObject) => {
         this.database = db;
         this.storage.get('database_filled').then(val => {
           if(val){
@@ -40,13 +41,21 @@ export class DatabaseProvider {
         this.database.executeSql("CREATE TABLE IF NOT EXISTS groups(id INTEGER PRIMARY KEY AUTOINCREMENT, groupname TEXT, color TEXT )", []).then((data) => {
           console.log("TABLE CREATED: ", data);
         }, (err)=>{
-          console.error("Unable to execute sql", err);
+          this.respToast("Unable to execute sql " +err);
         })
       }, (err) => {
-        console.error("Unable to open database", err);
+        this.respToast("Unable to open database" + err);
       })
     }); //end of platform.ready
 
+  }
+
+  respToast(msg){
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 5000
+    });
+    toast.present();
   }
 
   getAllGroup(){
@@ -59,7 +68,7 @@ export class DatabaseProvider {
       }
       return group;
     }, err => {
-      console.log('error:', err)
+      this.respToast('couldnt get all groups db' + err)
       return [];
     })
   }
@@ -69,17 +78,21 @@ export class DatabaseProvider {
     return this.database.executeSql("INSERT INTO groups (groupname, color) VALUES (?,?)", data).then(data => {
       return data;
     }, err => {
-      console.log('Error: ', err);
+      this.respToast('couldnt add groups db' + err)
       return err;
     })
   }
 
   fillDatabase(){
-    this.http.get('assets/dummyDump.sql').map(res => res.text()).subscribe(sql => {
-      this.sqlitePorter.importSqlToDb(this.database, sql).then(data => {
+    this.http.get('assets/dummyDump.sql')
+    .map(res => res.text())
+    .subscribe(sql => {
+      this.sqlitePorter.importSqlToDb(this.database, sql)
+      .then(data => {
         this.databaseReady.next(true);
-        this.storage.set('database_filled', true)
-      }).catch(e => console.error(e));
+        this.storage.set('database_filled', true);
+      })
+      .catch(e =>this.respToast('couldnt fill database db'+ e));
     });
   }
 
@@ -88,7 +101,7 @@ export class DatabaseProvider {
     return this.database.executeSql("INSERT INTO contacts (fname, groupname, phone) VALUES (?,?,?)", data).then(data => {
       return data;
     },err => {
-      console.log('Error: ', err);
+      this.respToast('couldnt add contact db'+err)
       return err;
     });
   }
@@ -103,7 +116,7 @@ export class DatabaseProvider {
       } //end of if statement
       return contact;
     }, err=> {
-      console.log('Error: ', err);
+      this.respToast(err)
       return [];
     });
   }
@@ -118,7 +131,7 @@ export class DatabaseProvider {
       } //end of if statement
       return contact;
     }, err=> {
-      console.log('Error: ', err);
+      this.respToast('couldnt get groupcontact db' + err)
       return [];
     });
   }

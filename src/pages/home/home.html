@@ -20,12 +20,19 @@
 </ion-header>
 
 <ion-content class="main-content">
+
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="pull down to refresh" refreshingSpinner="circles" refreshingText="updating...">
     </ion-refresher-content>
   </ion-refresher>
 
-  <!-- <button ion-button full (click)="showPrompt()">open prompt</button> -->
+  <!-- <ion-grid>
+      <ion-row>
+        <ion-col col-4 col-md-3>
+          <div class="div-circle">Family</div>
+        </ion-col>
+      </ion-row>
+    </ion-grid> -->
 
   <!-- add segment header -->
   <ion-segment [(ngModel)]='phoneList'>
@@ -36,14 +43,14 @@
       Groups
     </ion-segment-button>
   </ion-segment>
-  <!-- end of segment header -->
 
   <!-- contains all data in page -->
   <div [ngSwitch]='phoneList'>
     <!-- Contacts segment -->
     <div *ngSwitchCase="'contacts'">
       <ion-list no-lines>
-        <ion-item *ngFor="let contact of foundContacts; let i = index;">
+          <ion-item-sliding *ngFor="let contact of foundContacts; let i = index;">
+        <ion-item>
           <ion-grid>
             <ion-row>
               <ion-col col-3>
@@ -59,18 +66,23 @@
               </ion-col>
               <ion-col col-1>
                 <div item-end>
-                  <ion-icon name="more" color='primary' class="more-icon"></ion-icon>
+                  <ion-icon name="arrow-back" color='primary' class="more-icon"></ion-icon>
                 </div>
               </ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
+        <ion-item-options side="right">
+            <button ion-button color="danger" (click)="deleteContact(contact)"><ion-icon name='trash'></ion-icon>Delete</button>
+            <!-- <button ion-button (click)="pickUserContact(contact)"><ion-icon name='checkmark'></ion-icon>Select</button> -->
+          </ion-item-options>
+        </ion-item-sliding>
       </ion-list>
     </div>
 
     <!-- Group segment -->
     <div *ngSwitchCase="'groups'">
-      <div *ngIf="!isGroupEmpty; else messageDiv">
+      <div *ngIf='!isGroupEmpty; else messageDiv'>
         <ion-grid>
           <ion-row>
             <ion-col col-4 col-md-3 #groupDivs *ngFor="let group of groups">
@@ -79,6 +91,7 @@
           </ion-row>
         </ion-grid>
       </div>
+
       <ng-template #messageDiv>
         <div class="empty-msg">
           <h2>Start adding your first group...</h2>

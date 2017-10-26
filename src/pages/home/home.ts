@@ -32,29 +32,9 @@ export class HomePage {
   foundContacts = [];
   usersGroup = []
   firstLetter: string;
+  pickedContact: any;
 
   constructor(private socialSharing: SocialSharing, public alertCtrl: AlertController, private toastCtrl:ToastController, private sms: SMS, private callcont: CallNumber, private platform: Platform, private actionsheet: ActionSheetController, private sanitize: DomSanitizer, private contacts: Contacts, private contact: Contact, private databaseprovider: DatabaseProvider, public modalCtrl: ModalController, public navCtrl: NavController) {
-
-    var array = [{
-      'family':{
-        color:'#fff',
-        contactname: 'adams',
-        phNo: '0504245554',
-        groupname: 'family'
-      }
-    }]
-    var array2 = [{
-      'friends':{
-        color:'#fff',
-        contactname: 'abdulmajid',
-        phNo: '0504056605',
-        groupname: 'friends'
-      }
-    }]
-    this.usersGroup.push(array);
-    this.usersGroup.push(array2);
-
-    console.log("Group arrays ",this.usersGroup);
 
     this.search(' ');
     this.databaseprovider.getDatabaseState().subscribe(rdy => {
@@ -104,9 +84,19 @@ export class HomePage {
   respToast(msg){
     let toast = this.toastCtrl.create({
       message: msg,
-      duration: 3000
+      duration: 5000
     });
     toast.present();
+  }
+
+  //delete contacts
+  deleteContact(contact){
+    this.contact.remove().then((data) =>{
+      contact = [this.contact.phoneNumbers[0]]
+      this.respToast('contact was successfully removed');
+    }).catch((Error) =>{
+      this.respToast(Error)
+    });
   }
 
   //open more option
@@ -175,6 +165,7 @@ export class HomePage {
     })
   }
 
+  //send sms
   sendSMS(callNo: string, sms: string){
     var option: {
       replaceLineBreaks: true,
@@ -220,7 +211,9 @@ export class HomePage {
       } else {
         this.isGroupEmpty = false;
       }
-      console.log(this.groups)
+      //this.respToast('hompage'+this.groups)
+    }).catch((Error) => {
+      this.respToast('get all group err' + Error)
     })
   }
 

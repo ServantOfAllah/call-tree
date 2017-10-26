@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ToastController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ToastController, LoadingController, } from 'ionic-angular';
+import { Contacts, Contact, ContactField, ContactName, ContactFieldType } from '@ionic-native/contacts';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatabaseProvider } from './../../providers/database/database';
 import { HomePage } from '../../pages/home/home'
@@ -17,7 +18,7 @@ export class AddContactPage {
   allGroups = [];
   submitAttemp: boolean = false;
 
-  constructor(private loadCtrl: LoadingController, private toast: ToastController, private databaseprovider: DatabaseProvider, private view: ViewController, private formBuilder: FormBuilder, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private _contacts: Contacts, private _contact: Contact, private loadCtrl: LoadingController, private toast: ToastController, private databaseprovider: DatabaseProvider, private view: ViewController, private formBuilder: FormBuilder, public navCtrl: NavController, public navParams: NavParams) {
 
     this.databaseprovider.getDatabaseState().subscribe(rdy => {
       if (rdy) {
@@ -51,41 +52,53 @@ export class AddContactPage {
     this.contacts['groupname'] = selectedForm;
   }
 
+  respToast(msg){
+    let toast = this.toast.create({
+      message: msg,
+      duration: 3000
+    });
+    toast.present();
+  }
+
+  //save contact
+  saveContact(){
+    this._contacts.create();
+    this._contact.name = new ContactName(null, this.contact['fname']);
+    this._contact.phoneNumbers = [new ContactField('mobile', this.contact['phone'])];
+    this._contact.displayName = this.contact['fname'];
+    this._contact.nickname = this.contact['fname'];
+
+    this._contact.save().then((data): any =>{
+      this.respToast('contact successfully created');
+    }).catch((Error): any => {
+      this.respToast(Error);
+    })
+  }
+
   addContact() {
     this.submitAttemp = true
     if(this.contact['fname'] && this.contact['groupname'] && parseInt(this.contact['phone'])){
       this.databaseprovider.addContacts(this.contact['fname'], this.contact['groupname'], parseInt(this.contact['phone']))
       .then(data => {
-        this.loadDeveloperData();
+        this.respToast('contact created from addContact method');
+        this.respToast("add contacts" + data.fname);
+        this.navCtrl.setRoot(HomePage);
+        //this.loadDeveloperData();
+      }).catch((Error) => {
+        this.respToast(Error);
       });
+      this.saveContact();
       this.contact = {};
       this.loading('creating contacts')
       this.navCtrl.setRoot(HomePage);
-      this.suceessToast('Contact was successfully created');
+      this.respToast('Contact was successfully created');
       }else if(this.contact['fname'] == '' || parseInt(this.contact['phone'].lenght) <= 0){
-        this.validationToast('Contact name and phone number cannot be empty');
+        this.respToast('Contact name and phone number cannot be empty');
       }else if(this.contact['groupname'].lenght < 1){
-        this.validationToast('Please select a group for your contact');
+        this.respToast('Please select a group for your contact');
       }else{
-        this.validationToast('Contact name and phone field cannot be empty');
+        this.respToast('Contact name and phone field cannot be empty');
       }
-  }
-
-  suceessToast(msg: string){
-    let toast = this.toast.create({
-      message: msg,
-      duration: 3000,
-      position: 'bottom'
-    })
-  }
-
-  validationToast(msg: string) {
-    let toast = this.toast.create({
-      message: msg,
-      duration: 3000,
-      position: 'bottom'
-    });
-    toast.present();
   }
 
   loading(msg: string){

@@ -18,7 +18,7 @@ export class CreateGroupPage {
   groups = [];
   group = {};
   groupsColor = [];
-  isGroupEmpty: boolean;
+  isGroupEmpty: boolean = false;
 
   constructor(private loadCtrl: LoadingController, private toast: ToastController, private databaseprovider: DatabaseProvider, private storage: Storage, private view: ViewController, private formBuilder: FormBuilder, public navCtrl: NavController, public navParams: NavParams) {
     this.databaseprovider.getDatabaseState().subscribe(rdy => {
@@ -42,6 +42,8 @@ export class CreateGroupPage {
   loadDeveloperData() {
     this.databaseprovider.getAllGroup().then(data => {
       this.groups = data;
+    }).catch((Error) =>{
+      this.respToast('couldnt read all from group '+Error)
     })
   }
 
@@ -52,7 +54,9 @@ export class CreateGroupPage {
   getGroups(){
     this.databaseprovider.getAllGroup().then((data) => {
       this.groupsColor = data;
-      console.log('all groups ', this.groupsColor);
+      this.respToast('all groups ' + this.groupsColor);
+    }).catch((Error) =>{
+      this.respToast('couldnt get all groups ' + Error)
     })
   }
 
@@ -61,21 +65,31 @@ export class CreateGroupPage {
     if(this.group['groupname'] && this.group['color']){
       this.databaseprovider.addGroups(this.group['groupname'], this.group['color']).then(data => {
         this.loadDeveloperData();
+      }).catch((Error) => {
+        this.respToast('couldnt get group ' + Error)
       });
       this.group = {};
       this.loading('loading');
       this.navCtrl.setRoot(HomePage);
-      this.suceessToast('Contact group was successfully created');
+      this.respToast('Contact group was successfully created');
       console.log("group created", this.group)
     }else if(this.group['groupname'].lenght > 7){
-      this.validationToast('Too long, lenght cannot be more than 10 letters');
+      this.respToast('Too long, lenght cannot be more than 10 letters');
       this.submitAttemp = false;
     }else if(this.group['groupname'] == ''){
-      this.validationToast('Too short, lenght cannot be less than 3 letters');
+      this.respToast('Too short, lenght cannot be less than 3 letters');
       this.submitAttemp = false;
     }else{
-      this.validationToast('The group name and color field cannot be empty');
+      this.respToast('The group name and color field cannot be empty');
     }
+  }
+
+  respToast(msg){
+    let toast = this.toast.create({
+      message: msg,
+      duration: 5000
+    });
+    toast.present();
   }
 
   doRefresh(refresher){
@@ -84,23 +98,6 @@ export class CreateGroupPage {
       console.log('update has ended');
       refresher.complete();
     }, 2000);
-  }
-
-  suceessToast(msg: string){
-    let toast = this.toast.create({
-      message: msg,
-      duration: 3000,
-      position: 'bottom'
-    })
-  }
-
-  validationToast(msg: string) {
-    let toast = this.toast.create({
-      message: msg,
-      duration: 3000,
-      position: 'bottom'
-    });
-    toast.present();
   }
 
   closeModal() {
