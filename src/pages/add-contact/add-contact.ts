@@ -65,7 +65,7 @@ export class AddContactPage {
     this._contacts.create();
     this._contact.name = new ContactName(null, this.contact['fname']);
     this._contact.phoneNumbers = [new ContactField('mobile', this.contact['phone'])];
-    this._contact.displayName = this.contact['fname'];
+    this._contact.displayName = this.contact['fname'] + this.contact['lname'];
     this._contact.nickname = this.contact['fname'];
 
     this._contact.save().then((data): any =>{
@@ -77,11 +77,9 @@ export class AddContactPage {
 
   addContact() {
     this.submitAttemp = true
-    if(this.contact['fname'] && this.contact['groupname'] && parseInt(this.contact['phone'])){
-      this.databaseprovider.addContacts(this.contact['fname'], this.contact['groupname'], parseInt(this.contact['phone']))
+    if(this.contact['fname'] && this.contact['lname'] && this.contact['groupname'] && parseInt(this.contact['phone'])){
+      this.databaseprovider.addContacts(this.contact['fname'], this.contact['lname'], this.contact['groupname'], parseInt(this.contact['phone']))
       .then(data => {
-        this.respToast('contact created from addContact method');
-        this.respToast("add contacts" + data.fname);
         this.navCtrl.setRoot(HomePage);
         //this.loadDeveloperData();
       }).catch((Error) => {
@@ -92,7 +90,7 @@ export class AddContactPage {
       this.loading('creating contacts')
       this.navCtrl.setRoot(HomePage);
       this.respToast('Contact was successfully created');
-      }else if(this.contact['fname'] == '' || parseInt(this.contact['phone'].lenght) <= 0){
+      }else if(this.contact['fname'] == '' || this.contact['lname'] == '' || parseInt(this.contact['phone'].lenght) <= 0){
         this.respToast('Contact name and phone number cannot be empty');
       }else if(this.contact['groupname'].lenght < 1){
         this.respToast('Please select a group for your contact');

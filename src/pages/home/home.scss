@@ -74,13 +74,22 @@ page-home {
   }
   .div-circle{
     border-radius: 50%;
-    width: 70px;
-    height: 70px;
+    width: 100px;
+    height: 100px;
+    //border: solid 1px #9000ff;
+    text-align: center;
+    padding-top: 35px;
+    text-transform: uppercase;
+  }
+  .div-circles{
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
     border: solid 1px #9000ff;
     text-align: center;
-    padding-top: 25px;
+    padding-top: 15px;
     text-transform: uppercase;
-}
+  }
   // .fab-mini:before {
   //     content: " ";
   //     position: absolute;

@@ -19,6 +19,9 @@ export class ContactListPage {
   groupvalCol: any;
   grouplist = [];
   pickedContact: any;
+  givenName: any;
+  familyName: any;
+  phoneNo: any;
 
   constructor(private _contacts: Contacts, private _contact: Contact, private toastCtrl: ToastController, private databaseprovider: DatabaseProvider, private modalCtrl: ModalController, public navCtrl: NavController, public navParams: NavParams) {
 
@@ -44,11 +47,26 @@ export class ContactListPage {
   pickUserContact(contact) {
     this._contacts.pickContact().then((data) => {
       this.pickedContact = data;
-      this.respToast('contact selected! ' + typeof (this.pickedContact.displayName));
-      this.respToast('contact selected! ' + typeof (this.pickedContact.phoneNumbers[0].value.toString()));
+      this.givenName = this.pickedContact.name.givenName;
+      this.familyName = this.pickedContact.name.familyName;
+      this.phoneNo = this.pickedContact.phoneNumbers[0].value.toString();
+      this.respToast('contact selected! ' + this.givenName);
+      this.respToast('contact selected! ' + this.familyName);
+      this.respToast('contact selected! ' + this.phoneNo);
+      this.addPickedContact();
     }).catch((Error) => {
       this.respToast(Error)
     })
+  }
+
+  //add picked contact to the database
+  addPickedContact(){
+    this.databaseprovider.addContacts(this.givenName, this.familyName, this.groupval, this.phoneNo).then((data) => {
+      this.respToast(`${this.givenName} added to ${this.groupval} group`);
+    }).catch((Error) =>{
+      this.respToast(`Couldnt add ${this.givenName} to ${this.groupval} group` + Error);
+    });
+
   }
 
   loadDeveloperData() {

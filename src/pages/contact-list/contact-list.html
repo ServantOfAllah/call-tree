@@ -5,7 +5,7 @@
     </button>
     <ion-buttons end>
       <button ion-button icon-only>
-        <ion-icon name="ios-settings"></ion-icon>
+        <ion-icon name="refresh"></ion-icon>
       </button>
     </ion-buttons>
     <!-- <ion-title>Home</ion-title> -->
@@ -25,7 +25,7 @@
       </div>
     </ion-scroll>
     <ion-fab left top>
-      <button ion-fab mini (click)="createContact()" color="secondary" class="fab-top">
+      <button ion-fab mini (click)="pickUserContact()" color="secondary" class="fab-top">
         <ion-icon name='add'></ion-icon>
       </button>
     </ion-fab>
@@ -36,11 +36,10 @@
     </button>
   </ion-fab>
   <ion-list>
-      <h2>list of contacts</h2>
     <ion-item-sliding *ngFor="let contact of contacts">
     <ion-item>
       <div class="div-circle" item-start>A</div>
-      <h2>{{contact.fname}}</h2>
+      <h2>{{contact.fname}} {{contact.lname}}</h2>
       <p>{{contact.phone}}</p>
     </ion-item>
     <ion-item-options side="right">

@@ -55,7 +55,7 @@
             <ion-row>
               <ion-col col-3>
                 <ion-avatar item-start>
-                  <div class="div-circle" item-start *ngIf='!contact?.photos'>{{firstLetter}}</div>
+                  <div class="div-circles" item-start *ngIf='!contact?.photos'>{{firstLetter}}</div>
                   <img *ngIf="contact?.photos" [src]="sanitizeImg(contact?.photos[0].value)" />
                 </ion-avatar>
               </ion-col>

@@ -96,9 +96,9 @@ export class DatabaseProvider {
     });
   }
 
-  addContacts(fname, groupname, phone){
-    let data = [fname, groupname, phone];
-    return this.database.executeSql("INSERT INTO contacts (fname, groupname, phone) VALUES (?,?,?)", data).then(data => {
+  addContacts(fname, lname, groupname, phone){
+    let data = [fname, lname, groupname, phone];
+    return this.database.executeSql("INSERT INTO contacts (fname, lname, groupname, phone) VALUES (?,?,?,?)", data).then(data => {
       return data;
     },err => {
       this.respToast('couldnt add contact db'+err)
@@ -111,7 +111,7 @@ export class DatabaseProvider {
       let contact = [];
       if(data.rows.length >= 0){
         for(var i=0; i<data.rows.length; i++){
-          contact.push({ fname: data.rows.item(i).fname, groupname: data.rows.item(i).groupname, phone: data.rows.item(i).phone })
+          contact.push({ fname: data.rows.item(i).fname, lname: data.rows.item(i).lname, groupname: data.rows.item(i).groupname, phone: data.rows.item(i).phone })
         } // end of for loop
       } //end of if statement
       return contact;
@@ -126,7 +126,7 @@ export class DatabaseProvider {
       let contact = [];
       if(data.rows.length >= 0){
         for(var i=0; i<data.rows.length; i++){
-          contact.push({ fname: data.rows.item(i).fname, groupname: data.rows.item(i).groupname, phone: data.rows.item(i).phone })
+          contact.push({ fname: data.rows.item(i).fname, lname: data.rows.item(i).lname, groupname: data.rows.item(i).groupname, phone: data.rows.item(i).phone })
         } // end of for loop
       } //end of if statement
       return contact;
